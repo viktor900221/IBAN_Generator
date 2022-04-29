@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 
 namespace IBAN
@@ -12,6 +13,26 @@ namespace IBAN
     {
         static void Main(string[] args)
         {
+
+          /*  MySql.Data.MySqlClient.MySqlConnection conn;
+            string myConnectionString;
+
+            myConnectionString = "server=localhost;uid=root;" +
+                "pwd=null;database=testdb";
+
+            try
+            {
+                conn = new MySql.Data.MySqlClient.MySqlConnection();
+                conn.ConnectionString = myConnectionString;
+                conn.Open();
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }*/
+
+
+
             //Eingabe der Bankleitzahl und der Kontonummer die IBAN ermittelt und ausgibt.
             //für mindestens vier Länder auszulegen landesspezifischen Längen für Bankleitzahl und Kontonummer zu berücksichtigen.
             //Plausibilitätsprüfung der Eingabe
