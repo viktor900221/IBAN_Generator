@@ -1,8 +1,10 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace IBAN
 {
@@ -33,36 +35,96 @@ namespace IBAN
 
             const string LL = "DE";
 
-            //Eingabe Bankleitzahl + Kontonummer -> IBAN Ermittlung
+
+            //DATENBANK für die AKTUELLE BLZ Nummer angelegt: von der 'www.bundesbank.de' die blz-aktuell-xlsx datei runtergeladen und in SQL Format konvertiert. 
+
+            ////////////////Eingabe Bankleitzahl + Kontonummer//////////////////
+            
+            //Bankleitzahl:
 
             int Bankleitzahl_Global;
             int Bankleitzahl_check_erg;
-
+            
+       
             do
             {
-                Console.WriteLine("Bankleitzahl"); // Darf max 8 Stellig sein und nur Ziffern!
+                Console.WriteLine("\t" + "Bankleitzahl Eingeben: Bitte exakt 8 Ziffern eingeben!" + "\n"); // Darf max 8 Stellig sein und nur Ziffern!
+                Console.WriteLine();
+
+                Console.Write("{0,1}", ".");
+                Console.Write("{0,1}", ".");
+                Console.Write("{0,1}", ".");
+                Console.Write("{0,1}", ".");
+                Console.Write("{0,1}", ".");
+                Console.Write("{0,1}", ".");
+                Console.Write("{0,1}", ".");
+                Console.WriteLine("{0,1}", ".");
+
                 int Bankleitzahl = int.Parse(Console.ReadLine());
                 string Bankleitzahl_umwandeln = Bankleitzahl.ToString();
                 string Bankleitzahl_check = Bankleitzahl_umwandeln.Length.ToString();
                 Bankleitzahl_check_erg = int.Parse(Bankleitzahl_check);
 
 
-                if (Bankleitzahl_check_erg > 8 || Bankleitzahl_check_erg < 1)
+                if (Bankleitzahl_check_erg > 8 || Bankleitzahl_check_erg < 8)
                 {
-                    Console.WriteLine("Ungültiges Bankleitzahl!");
+                    Console.WriteLine("\t" + "\t" + "Ungültiges Bankleitzahl!" + "\n");
                 }
                 else {
                     Bankleitzahl_Global = Bankleitzahl;
-                    Console.WriteLine("Die Bankleitzahl: " + Bankleitzahl_Global);
+                    Console.WriteLine("\t" + "\t" + "Die Bankleitzahl: " + Bankleitzahl_Global + "\n");
                 }
 
 
-            } while ( Bankleitzahl_check_erg > 8 || Bankleitzahl_check_erg < 1);
+            } while ( Bankleitzahl_check_erg > 8 || Bankleitzahl_check_erg < 8);
 
 
-       
-            Console.WriteLine("Kontonummer");
-            int Kontonummer = int.Parse(Console.ReadLine());
+            //Kontonummer:
+
+            int Kontonummer_Global;
+            int Kontonummer_check_erg;
+
+           
+            do
+            {
+                Console.WriteLine("\t" + "Kontonummer Eingeben: Bitte maximum 10 Stellig! \n'*' Weniger als 10 Stellig wird automatisch mit Nullen aufgefüllt" + "\n"); // Darf max 10 Stellig sein und nur Ziffern!
+                Console.WriteLine();
+
+                Console.Write("{0,1}", ".");
+                Console.Write("{0,1}", ".");
+                Console.Write("{0,1}", ".");
+                Console.Write("{0,1}", ".");
+                Console.Write("{0,1}", ".");
+                Console.Write("{0,1}", ".");
+                Console.Write("{0,1}", ".");
+                Console.Write("{0,1}", ".");
+                Console.Write("{0,1}", ".");
+                Console.WriteLine("{0,1}", ".");
+
+
+
+                int Kontonummer = int.Parse(Console.ReadLine());
+                string Kontonummer_umwandeln = Kontonummer.ToString();
+                string Kontonummer_check = Kontonummer_umwandeln.Length.ToString();
+                Kontonummer_check_erg = int.Parse(Kontonummer_check);
+
+
+                if (Kontonummer_check_erg > 10 || Kontonummer_check_erg < 1)
+                {
+                    Console.WriteLine("\t" + "\t" + "Ungültiges Kontonummer!" + "\n");
+                }
+                else
+                {
+                    Kontonummer_Global = Kontonummer;
+                    Console.WriteLine("\t" + "\t" + "Die Kontonummer: " + Kontonummer_Global + "\n");
+                }
+
+
+            } while (Kontonummer_check_erg > 10 || Kontonummer_check_erg < 1);
+
+
+
+            Console.ReadKey();
 
 
 
