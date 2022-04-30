@@ -60,45 +60,6 @@ namespace IBAN
             //DATENBANK für die AKTUELLE BLZ Nummer angelegt: von der 'www.bundesbank.de' die blz-aktuell-xlsx datei runtergeladen und in SQL Format konvertiert. 
 
 
-            //MYSQL CONNECTION
-
-            //This is my connection string i have assigned the database file address path  
-            string connStr = "server=localhost;user=viktor;database=blz_bundesbank;port=3306;password=12345";
-
-
-            MySqlConnection conn = new MySqlConnection(connStr);
-            try
-            {
-                Console.WriteLine("Connecting to MySQL...");
-                conn.Open();
-
-                //SQL Query to execute
-                //selecting only first 10 rows for demo
-                string sql = "select * from blz_bundesbank.table_name limit 0,10;";
-                MySqlCommand cmd = new MySqlCommand(sql, conn);
-                MySqlDataReader rdr = cmd.ExecuteReader();
-
-                //read the data
-                while (rdr.Read())
-                {
-                    Console.WriteLine(rdr[0] + " -- " + rdr[1] + " -- " + rdr[2]);
-                }
-                rdr.Close();
-            }
-            catch (Exception err)
-            {
-                Console.WriteLine(err.ToString());
-            }
-
-            conn.Close();
-            Console.WriteLine("Connection Closed. Press any key to exit...");
-            Console.Read();
-
-
-
-
-
-
 
 
 
@@ -186,6 +147,43 @@ namespace IBAN
 
 
             } while (Kontonummer_check_erg > 10 || Kontonummer_check_erg < 1);
+
+            //MYSQL CONNECTION
+
+            //This is my connection string i have assigned the database file address path  
+            string connStr = "server=localhost;user=viktor;database=blz_bundesbank;port=3306;password=12345";
+
+
+            MySqlConnection conn = new MySqlConnection(connStr);
+            try
+            {
+                Console.WriteLine("Connecting to MySQL...");
+                conn.Open();
+
+                //SQL Query to execute
+                //selecting only first 10 rows for demo
+                string sql = "select * from blz_bundesbank.table_name where Bankleitzahl = '10010123';";
+                //string sql = "select * from blz_bundesbank.table_name limit 0,10;";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                MySqlDataReader rdr = cmd.ExecuteReader();
+
+                //read the data
+                while (rdr.Read())
+                {
+                    Console.WriteLine(rdr[0] + " -- " + rdr[1] + " -- " + rdr[2]);
+                }
+                rdr.Close();
+            }
+            catch (Exception err)
+            {
+                Console.WriteLine(err.ToString());
+            }
+
+            conn.Close();
+            Console.WriteLine("Connection Closed. Press any key to exit...");
+            Console.Read();
+
+
 
 
             Console.ReadKey();
