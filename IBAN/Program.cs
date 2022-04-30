@@ -14,24 +14,6 @@ namespace IBAN
         static void Main(string[] args)
         {
 
-          /*  MySql.Data.MySqlClient.MySqlConnection conn;
-            string myConnectionString;
-
-            myConnectionString = "server=localhost;uid=root;" +
-                "pwd=null;database=testdb";
-
-            try
-            {
-                conn = new MySql.Data.MySqlClient.MySqlConnection();
-                conn.ConnectionString = myConnectionString;
-                conn.Open();
-            }
-            catch (MySql.Data.MySqlClient.MySqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }*/
-
-
 
             //Eingabe der Bankleitzahl und der Kontonummer die IBAN ermittelt und ausgibt.
             //für mindestens vier Länder auszulegen landesspezifischen Längen für Bankleitzahl und Kontonummer zu berücksichtigen.
@@ -54,7 +36,7 @@ namespace IBAN
 
             DE21 3012 0400 0000 0152 28 (Papierformat)*/
 
-           // const string LL = "DE";
+           const string LL = "DE";
 
 
             //DATENBANK für die AKTUELLE BLZ Nummer angelegt: von der 'www.bundesbank.de' die blz-aktuell-xlsx datei runtergeladen und in SQL Format konvertiert. 
@@ -70,7 +52,7 @@ namespace IBAN
 
             var Bankleitzahl_Global = 0; //Für Mysql muss var sein
             int Bankleitzahl_check_erg;
-            string Bankleitzahl_Global_string; //Für MYSQL
+           
 
 
             do
@@ -100,7 +82,7 @@ namespace IBAN
                 else {
                     Bankleitzahl_Global = Bankleitzahl;
                     Console.WriteLine("\t" + "\t" + "Die Bankleitzahl: " + Bankleitzahl_Global + "\n");
-                    Bankleitzahl_Global_string = Bankleitzahl_Global.ToString();
+                    
                 }
 
 
@@ -110,10 +92,11 @@ namespace IBAN
 
             //Kontonummer:
 
-            int Kontonummer_Global;
+            var Kontonummer_Global = 0;
             int Kontonummer_check_erg;
+            //string Kontonummer_Global_string;
 
-           
+
             do
             {
                 Console.WriteLine("\t" + "Kontonummer Eingeben: Bitte maximum 10 Stellig! \n'*' Weniger als 10 Stellig wird automatisch mit Nullen aufgefüllt" + "\n"); // Darf max 10 Stellig sein und nur Ziffern!
@@ -145,6 +128,7 @@ namespace IBAN
                 else
                 {
                     Kontonummer_Global = Kontonummer;
+                    //Kontonummer_Global_string = Kontonummer.ToString();
                     Console.WriteLine("\t" + "\t" + "Die Kontonummer: " + Kontonummer_Global + "\n");
                 }
 
@@ -157,7 +141,7 @@ namespace IBAN
             string connStr = "server=localhost;user=viktor;database=blz_bundesbank;port=3306;password=12345";
 
             var BLZ = 0;
-          
+            var PZ = 0;
             MySqlConnection conn = new MySqlConnection(connStr);
             try
             {
@@ -176,9 +160,10 @@ namespace IBAN
                 {
                     //BLZ = rdr.GetInt32(0);
                     BLZ = rdr.GetInt32(0);
-
+                    PZ = rdr.GetInt32(8);
                     if (BLZ == Bankleitzahl_Global) {
                         Console.WriteLine(rdr[2] + " -- " + BLZ + " gefunden");
+                        //Bankleitzahl_Global_string = BLZ.ToString();
                         break;
                     }
                 }
@@ -196,7 +181,23 @@ namespace IBAN
             Console.Read();
 
 
-            Console.WriteLine(BLZ);
+            //Console.WriteLine(BLZ);
+            //Console.WriteLine(PZ);
+            //Jetzt müssen wir den Konstant 'DE' + Bankleitzahl_Global_string -> in ein Array packen!
+          
+            string BLZ2= BLZ.ToString();
+            string Kontonummer_String = Kontonummer_Global.ToString();
+            string PZ2 = PZ.ToString();
+          
+            //string[] Iban_Array = new string[] {LL,PZ2,BLZ2,Kontonummer_String};
+            string[,] Iban_Array = new string[4, 1] {{LL}, {PZ2}, {BLZ2}, {Kontonummer_String}};
+
+            foreach (string s in Iban_Array)
+            {
+                Console.WriteLine("{0} ", s);
+            }
+
+        
 
             Console.ReadKey();
 
