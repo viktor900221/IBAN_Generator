@@ -54,7 +54,7 @@ namespace IBAN
 
             DE21 3012 0400 0000 0152 28 (Papierformat)*/
 
-            const string LL = "DE";
+           // const string LL = "DE";
 
 
             //DATENBANK für die AKTUELLE BLZ Nummer angelegt: von der 'www.bundesbank.de' die blz-aktuell-xlsx datei runtergeladen und in SQL Format konvertiert. 
@@ -68,10 +68,11 @@ namespace IBAN
 
             //Bankleitzahl:
 
-            int Bankleitzahl_Global;
+            var Bankleitzahl_Global = 0; //Für Mysql muss var sein
             int Bankleitzahl_check_erg;
-            
-       
+            string Bankleitzahl_Global_string; //Für MYSQL
+
+
             do
             {
                 Console.WriteLine("\t" + "Bankleitzahl Eingeben: Bitte exakt 8 Ziffern eingeben!" + "\n"); // Darf max 8 Stellig sein und nur Ziffern!
@@ -99,11 +100,13 @@ namespace IBAN
                 else {
                     Bankleitzahl_Global = Bankleitzahl;
                     Console.WriteLine("\t" + "\t" + "Die Bankleitzahl: " + Bankleitzahl_Global + "\n");
+                    Bankleitzahl_Global_string = Bankleitzahl_Global.ToString();
                 }
 
 
             } while ( Bankleitzahl_check_erg > 8 || Bankleitzahl_check_erg < 8);
 
+            
 
             //Kontonummer:
 
@@ -153,26 +156,35 @@ namespace IBAN
             //This is my connection string i have assigned the database file address path  
             string connStr = "server=localhost;user=viktor;database=blz_bundesbank;port=3306;password=12345";
 
-
+            var BLZ = 0;
+          
             MySqlConnection conn = new MySqlConnection(connStr);
             try
             {
+               
+
                 Console.WriteLine("Connecting to MySQL...");
                 conn.Open();
 
-                //SQL Query to execute
-                //selecting only first 10 rows for demo
-                string sql = "select * from blz_bundesbank.table_name where Bankleitzahl = '10010123';";
-                //string sql = "select * from blz_bundesbank.table_name limit 0,10;";
+                string sql = "select * from blz_bundesbank.table_name where Bankleitzahl;";
+               
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 MySqlDataReader rdr = cmd.ExecuteReader();
-
+               
                 //read the data
                 while (rdr.Read())
                 {
-                    Console.WriteLine(rdr[0] + " -- " + rdr[1] + " -- " + rdr[2]);
+                    //BLZ = rdr.GetInt32(0);
+                    BLZ = rdr.GetInt32(0);
+
+                    if (BLZ == Bankleitzahl_Global) {
+                        Console.WriteLine(rdr[2] + " -- " + BLZ + " gefunden");
+                        break;
+                    }
                 }
                 rdr.Close();
+
+               
             }
             catch (Exception err)
             {
@@ -184,7 +196,7 @@ namespace IBAN
             Console.Read();
 
 
-
+            Console.WriteLine(BLZ);
 
             Console.ReadKey();
 
@@ -193,38 +205,6 @@ namespace IBAN
 
 
 
-    }
-
-     
-
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            /*try
-            {
-                //This is my connection string i have assigned the database file address path  
-                string MyConnection2 = "datasource=localhost;port=3307;username=viktor;password=12345";
-                //This is my insert query in which i am taking input from the user through windows forms  
-                string Query = "insert into blz_bundesbank.table_name(Bankleitzahl,Bezeichnung,PLZ,Ort,Kurzbezeichnung) values('" + this.Bankleitzahl.Text + "','" + this.Bezeichnung.Text + "','" + this.PLZ.Text + "','" + this.Ort.Text + "','" + this.Kurzbezeichnung.Text + "');";
-                //This is  MySqlConnection here i have created the object and pass my connection string.  
-                MySqlConnection MyConn2 = new MySqlConnection(MyConnection2);
-                //This is command class which will handle the query and connection object.  
-                MySqlCommand MyCommand2 = new MySqlCommand(Query, MyConn2);
-                MySqlDataReader MyReader2;
-                MyConn2.Open();
-                MyReader2 = MyCommand2.ExecuteReader();     // Here our query will be executed and data saved into the database.  
-                //MessageBox.Show("Save Data");
-                while (MyReader2.Read())
-                {
-                }
-                MyConn2.Close();
-            }
-            catch (Exception ex)
-            {
-                //MessageBox.Show(ex.Message);
-            }*/
         }
-
-        
     }
 }
