@@ -189,14 +189,16 @@ namespace IBAN
             string Kontonummer_String = Kontonummer_Global.ToString();
             string PZ2 = PZ.ToString();
           
-            //string[] Iban_Array = new string[] {LL,PZ2,BLZ2,Kontonummer_String};
-            string[,] Iban_Array = new string[4, 1] {{LL}, {PZ2}, {BLZ2}, {Kontonummer_String}};
-
-            foreach (string s in Iban_Array)
+            string[] Iban_Array = new string[] {LL,PZ2,BLZ2,Kontonummer_String};
+            //string[,] Iban_Array = new string[4, 1] {{LL}, {PZ2}, {BLZ2}, {Kontonummer_String}};
+            string Iban_Array_ergebnis = Iban_Array[0] + Iban_Array[1] + Iban_Array[2] + Iban_Array[3];
+            Console.WriteLine(Iban_Array_ergebnis);
+           
+            /* foreach (string s in Iban_Array)
             {
                 Console.WriteLine("{0} ", s);
             }
-
+           */
         
 
             Console.ReadKey();
