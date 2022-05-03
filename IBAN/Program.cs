@@ -94,10 +94,11 @@ namespace IBAN
 
                 //Kontonummer:
 
-                var Kontonummer_Global = 0;
+                long Kontonummer;
                 int Kontonummer_check_erg;
                 //string Kontonummer_Global_string;
 
+               
 
                 do
                 {
@@ -117,11 +118,15 @@ namespace IBAN
 
 
 
-                    int Kontonummer = int.Parse(Console.ReadLine());
+                    Kontonummer = long.Parse(Console.ReadLine());
                     string Kontonummer_umwandeln = Kontonummer.ToString();
                     string Kontonummer_check = Kontonummer_umwandeln.Length.ToString();
                     Kontonummer_check_erg = int.Parse(Kontonummer_check);
+                    
+                    Console.WriteLine(Kontonummer_check_erg);
 
+                    //int test = Kontonummer * 1000;
+                   // Console.WriteLine(test);
 
                     if (Kontonummer_check_erg > 10 || Kontonummer_check_erg < 1)
                     {
@@ -132,48 +137,55 @@ namespace IBAN
                        
                         if (Kontonummer_check_erg < 10) {
 
-                            int kontonummer2 = Kontonummer;
+                            //int kontonummer2 = Kontonummer;
 
                             //Hier soll er die Kontonummer mit Nullen ergänzen 
                             switch (Kontonummer_check_erg) {
 
-                                case 1: Kontonummer2 * 10000000000;                             
+                                case 1: Kontonummer = (long)(Kontonummer * 10000000000);
+                                    Console.WriteLine("\t" + "\t" + "Die Kontonummer: " + Kontonummer + "\n");
                                     break;
                                 case 2:
-                                    Kontonummer * 100000000;
+                                    Kontonummer = Kontonummer * 100000000;
+                                    Console.WriteLine("\t" + "\t" + "Die Kontonummer: " + Kontonummer + "\n");
                                     break;
                                 case 3:
-                                    Kontonummer * 10000000;
+                                    Kontonummer = Kontonummer * 10000000;
+                                    Console.WriteLine("\t" + "\t" + "Die Kontonummer: " + Kontonummer + "\n");
                                     break;
                                 case 4:
-                                    Kontonummer * 1000000;
+                                    Kontonummer = Kontonummer * 1000000;
+                                    Console.WriteLine("\t" + "\t" + "Die Kontonummer: " + Kontonummer + "\n");
                                     break;
                                 case 5:
-                                    Kontonummer * 100000;
+                                    Kontonummer = Kontonummer * 100000;
+                                    Console.WriteLine("\t" + "\t" + "Die Kontonummer: " + Kontonummer + "\n");
                                     break;
                                 case 6:
-                                    Kontonummer * 10000;
+                                    Kontonummer = Kontonummer * 10000;
+                                    Console.WriteLine("\t" + "\t" + "Die Kontonummer: " + Kontonummer + "\n");
                                     break;
                                 case 7:
-                                    Kontonummer * 1000;
+                                    Kontonummer = Kontonummer * 1000;
+                                    Console.WriteLine("\t" + "\t" + "Die Kontonummer: " + Kontonummer + "\n");
                                     break;
                                 case 8:
-                                    Kontonummer * 100;
+                                    Kontonummer = Kontonummer * 100;
+                                    Console.WriteLine("\t" + "\t" + "Die Kontonummer: " + Kontonummer + "\n");
                                     break;
                                 case 9:
-                                    Kontonummer * 10;
+                                    Kontonummer = Kontonummer * 10;
+                                    Console.WriteLine("\t" + "\t" + "Die Kontonummer: " + Kontonummer + "\n");
                                     break;
-
-
+                                case 10:
+                                    Kontonummer = Kontonummer * 1;
+                                    Console.WriteLine("\t" + "\t" + "Die Kontonummer: " + Kontonummer + "\n");
+                                    break;
                             } 
                      
 
                         }
-                        else { 
-                            Kontonummer_Global = Kontonummer;
-                        //Kontonummer_Global_string = Kontonummer.ToString();
-                        Console.WriteLine("\t" + "\t" + "Die Kontonummer: " + Kontonummer_Global + "\n");
-                        }
+                       
                     }
 
 
@@ -204,7 +216,7 @@ namespace IBAN
                     {
                         //BLZ = rdr.GetInt32(0);
                         BLZ = rdr.GetInt32(0);
-                        PZ = rdr.GetInt32(8);
+                        PZ = rdr.GetInt32(8); //Prüfziffer
                         if (BLZ == Bankleitzahl_Global) {
                             Console.WriteLine(rdr[2] + " -- " + BLZ + " gefunden");
                             //Bankleitzahl_Global_string = BLZ.ToString();
@@ -230,19 +242,19 @@ namespace IBAN
                 //Jetzt müssen wir den Konstant 'DE' + Bankleitzahl_Global_string -> in ein Array packen!
 
                 string BLZ2 = BLZ.ToString();
-                string Kontonummer_String = Kontonummer_Global.ToString();
+               // string Kontonummer_String = Kontonummer_Global.ToString();
                 string PZ2 = PZ.ToString();
+                string Kontonummer_String2 = Kontonummer.ToString();
 
-                string[] Iban_Array = new string[] { LL, PZ2, BLZ2, Kontonummer_String };
+                
+                
+
+                string[] Iban_Array = new string[] { LL, PZ2, BLZ2, Kontonummer_String2};
                 //string[,] Iban_Array = new string[4, 1] {{LL}, {PZ2}, {BLZ2}, {Kontonummer_String}};
                 string Iban_Array_ergebnis = Iban_Array[0] + Iban_Array[1] + Iban_Array[2] + Iban_Array[3];
                 Console.WriteLine("Ihre Iban Nummer lautet " + Iban_Array_ergebnis);
 
-                /* foreach (string s in Iban_Array)
-                {
-                    Console.WriteLine("{0} ", s);
-                }
-               */
+         
 
 
                 beenden = true;
