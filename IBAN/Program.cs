@@ -250,7 +250,13 @@ namespace IBAN
                 double Iban_ergebnis = Convert.ToDouble(Iban_Array_ergebnis);
                 
     ///////////////Ich möchte jetzt die Name in meine Tabelle in MYSQL speichern!///////////
+                
 
+            //kunden_daten
+            //Iban_nummer(double)
+            //Kunden_name(varchar(255))
+            //Kurzbezeichnung(varchar(255))
+                    
                 //MYSQL CONNECTION
 
                 //This is my connection string i have assigned the database file address path  
@@ -265,11 +271,13 @@ namespace IBAN
                     connection.Open();
                     MySqlCommand cmd = new MySqlCommand();
                     cmd.Connection = connection;
-                    cmd.CommandText = "INSERT INTO kunden_daten(Kunden_Name, Iban_nummer) VALUES(@Kunden_name, @Iban_nummer)";
+                    cmd.CommandText = "INSERT INTO kunden_daten(Kunden_Name, Iban_nummer, Kurzbezeichnung) VALUES(@Kunden_name, @Iban_nummer, @Kurzbezeichnung)";
                    // cmd.Prepare();
  
                     cmd.Parameters.AddWithValue("@Kunden_name", Name);
                     cmd.Parameters.AddWithValue("@Iban_nummer", Iban_ergebnis);
+                    //cmd.Parameters.AddWithValue("@Iban_nummer", ); Hier müssen wir die Kurzbezeichnung aus der andere Tabelle rausholen.
+
                     cmd.ExecuteNonQuery();    
                 }
                 finally
