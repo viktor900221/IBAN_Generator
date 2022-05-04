@@ -247,6 +247,7 @@ namespace IBAN
                 //string[,] Iban_Array = new string[4, 1] {{LL}, {PZ2}, {BLZ2}, {Kontonummer_String}};
                 string Iban_Array_ergebnis = Iban_Array[0] + Iban_Array[1] + Iban_Array[2] + Iban_Array[3];
                 
+                double Iban_ergebnis = Convert.ToDouble(Iban_Array_ergebnis);
                 
     ///////////////Ich möchte jetzt die Name in meine Tabelle in MYSQL speichern!///////////
 
@@ -264,10 +265,11 @@ namespace IBAN
                     connection.Open();
                     MySqlCommand cmd = new MySqlCommand();
                     cmd.Connection = connection;
-                    cmd.CommandText = "INSERT INTO kunden_daten(Kunden_Name) VALUES(@Kunden_name)";
+                    cmd.CommandText = "INSERT INTO kunden_daten(Kunden_Name, Iban_nummer) VALUES(@Kunden_name, @Iban_nummer)";
                    // cmd.Prepare();
  
                     cmd.Parameters.AddWithValue("@Kunden_name", Name);
+                    cmd.Parameters.AddWithValue("@Iban_nummer", Iban_ergebnis);
                     cmd.ExecuteNonQuery();    
                 }
                 finally
