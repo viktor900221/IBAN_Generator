@@ -14,8 +14,7 @@ namespace IBAN
         static void Main(string[] args)
         {
 
-            bool beenden;
-            do {
+            
                 
                 //Eingabe der Bankleitzahl und der Kontonummer die IBAN ermittelt und ausgibt.
                 //für mindestens vier Länder auszulegen landesspezifischen Längen für Bankleitzahl und Kontonummer zu berücksichtigen.
@@ -44,7 +43,9 @@ namespace IBAN
                 //DATENBANK für die AKTUELLE BLZ Nummer angelegt: von der 'www.bundesbank.de' die blz-aktuell-xlsx datei runtergeladen und in SQL Format konvertiert. 
 
 
-
+                //Eingabe für die Name der Kunde
+                Console.WriteLine("\t" + "Bitte Name der Kunde eingeben!" + "\n");
+                string kundename = Console.ReadLine();
 
 
 
@@ -236,57 +237,54 @@ namespace IBAN
                 Console.WriteLine("Connection Closed. Press any key to exit...");
                 Console.Read();
 
-
-                //Console.WriteLine(BLZ);
-                //Console.WriteLine(PZ);
-                //Jetzt müssen wir den Konstant 'DE' + Bankleitzahl_Global_string -> in ein Array packen!
-
+                //MYSQL CONNECTION CLOSED
+            
                 string BLZ2 = BLZ.ToString();
-               // string Kontonummer_String = Kontonummer_Global.ToString();
                 string PZ2 = PZ.ToString();
                 string Kontonummer_String2 = Kontonummer.ToString();
-
-                
-                
 
                 string[] Iban_Array = new string[] { LL, PZ2, BLZ2, Kontonummer_String2};
                 //string[,] Iban_Array = new string[4, 1] {{LL}, {PZ2}, {BLZ2}, {Kontonummer_String}};
                 string Iban_Array_ergebnis = Iban_Array[0] + Iban_Array[1] + Iban_Array[2] + Iban_Array[3];
+                
+                
+    ///////////////Ich möchte jetzt die Name in meine Tabelle in MYSQL speichern!///////////
+
+                //MYSQL CONNECTION
+
+                //This is my connection string i have assigned the database file address path  
+                string conn2Str = "server=localhost;user=root;database=blz_bundesbank;port=3306;password=";
+               
+
+               var Name = kundename;
+              MySqlConnection connection = null;
+                try
+                {
+                    connection = new MySqlConnection(conn2Str);
+                    connection.Open();
+                    MySqlCommand cmd = new MySqlCommand();
+                    cmd.Connection = connection;
+                    cmd.CommandText = "INSERT INTO kunden_daten(Kunden_Name) VALUES(@Kunden_name)";
+                   // cmd.Prepare();
+ 
+                    cmd.Parameters.AddWithValue("@Kunden_name", Name);
+                    cmd.ExecuteNonQuery();    
+                }
+                finally
+                {
+                    if (connection != null)
+                        connection.Close();
+                }
+
+               
+                Console.WriteLine("Connection Closed. Press any key to exit...");
+                Console.Read();
+
+                //MYSQL CONNECTION CLOSED
+
                 Console.WriteLine("Ihre Iban Nummer lautet " + Iban_Array_ergebnis);
 
-         
-
-
-                beenden = true;
-                string inneren_beenden = "";
-             //   do {
-                    Console.WriteLine("Möchten Sie das Program beenden ja oder nein?");
-                    string inneren_beenden2 = Console.ReadLine();
-
-                    inneren_beenden2 = inneren_beenden;
-
-             //     } while (inneren_beenden != "ja" || inneren_beenden != "nein");
-
-             
-
-                if (inneren_beenden == "ja")
-                {
-                    beenden = false;
-                }
-                else if (inneren_beenden == "nein")
-
-                {
-                    beenden = true;
-                }
-
-            } while (beenden != false);
-
            Console.ReadKey();
-
-
-
-
-
 
         }
     }
