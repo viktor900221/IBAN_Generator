@@ -196,7 +196,7 @@ namespace IBAN
                             
                         }else if(BLZ !=Bankleitzahl_Global){
                             leere = 0; //Wenn er nichts findet dann soll er 0 als Wert speichern
-                            break; 
+                           
                         }
 
                     }
