@@ -199,6 +199,7 @@ namespace IBAN
 
                 var BLZ = 0;
                 var PZ = 0;
+                var Kurz_Bezeichnung = "DE";  //Muss immer ein Wert zugewiesen werden das wird sowiespo überschrieben!
                 MySqlConnection conn = new MySqlConnection(connStr);
                 try
                 {
@@ -218,6 +219,8 @@ namespace IBAN
                         //BLZ = rdr.GetInt32(0);
                         BLZ = rdr.GetInt32(0);
                         PZ = rdr.GetInt32(8); //Prüfziffer
+                        Kurz_Bezeichnung = rdr.GetString(2); //Kurzbezeichnung
+
                         if (BLZ == Bankleitzahl_Global) {
                             Console.WriteLine(rdr[2] + " -- " + BLZ + " gefunden");
                             //Bankleitzahl_Global_string = BLZ.ToString();
@@ -247,7 +250,7 @@ namespace IBAN
                 //string[,] Iban_Array = new string[4, 1] {{LL}, {PZ2}, {BLZ2}, {Kontonummer_String}};
                 string Iban_Array_ergebnis = Iban_Array[0] + Iban_Array[1] + Iban_Array[2] + Iban_Array[3];
                 
-                double Iban_ergebnis = Convert.ToDouble(Iban_Array_ergebnis);
+               // string Iban_ergebnis = Convert.ToDouble(Iban_Array_ergebnis);
                 
     ///////////////Ich möchte jetzt die Name in meine Tabelle in MYSQL speichern!///////////
                 
@@ -256,6 +259,10 @@ namespace IBAN
             //Iban_nummer(double)
             //Kunden_name(varchar(255))
             //Kurzbezeichnung(varchar(255))
+
+                var Kurz_bezeichnung2 = Kurz_Bezeichnung;  
+
+                
                     
                 //MYSQL CONNECTION
 
@@ -271,13 +278,12 @@ namespace IBAN
                     connection.Open();
                     MySqlCommand cmd = new MySqlCommand();
                     cmd.Connection = connection;
-                    cmd.CommandText = "INSERT INTO kunden_daten(Kunden_Name, Iban_nummer, Kurzbezeichnung) VALUES(@Kunden_name, @Iban_nummer, @Kurzbezeichnung)";
-                   // cmd.Prepare();
+                    cmd.CommandText = "INSERT INTO kunden_daten(Kunden_Name, Iban_nummer, Kurzbezeichnung) VALUES(@Kunden_name, @Iban_nummer, @Kurzbezeichnung)"; 
  
                     cmd.Parameters.AddWithValue("@Kunden_name", Name);
-                    cmd.Parameters.AddWithValue("@Iban_nummer", Iban_ergebnis);
-                    //cmd.Parameters.AddWithValue("@Iban_nummer", ); Hier müssen wir die Kurzbezeichnung aus der andere Tabelle rausholen.
-
+                    cmd.Parameters.AddWithValue("@Iban_nummer", Iban_Array_ergebnis);
+                    cmd.Parameters.AddWithValue("@Kurzbezeichnung", Kurz_bezeichnung2);
+                    
                     cmd.ExecuteNonQuery();    
                 }
                 finally
