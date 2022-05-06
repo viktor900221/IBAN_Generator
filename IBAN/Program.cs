@@ -13,55 +13,36 @@ namespace IBAN
     {
         static void Main(string[] args)
         {
-
-            bool beenden;
-            do {
+                //*Als erstes Herr Rust: bitte unten bei MYSQL CONNECTION string connStr mit ihre Verbindungsdaten anpassen
                 
-                //Eingabe der Bankleitzahl und der Kontonummer die IBAN ermittelt und ausgibt.
-                //für mindestens vier Länder auszulegen landesspezifischen Längen für Bankleitzahl und Kontonummer zu berücksichtigen.
-                //Plausibilitätsprüfung der Eingabe
-                //Fehleingaben abzufangen
-                //Das Programm ist laufend wiederholbar (ohne Neustart) und kann durch einen Beendigungsbefehl verlassen werden.
-                //Für eine 100% Lösung kommuniziert Ihr Programm mit einer eigenen Datenbank und kann die IBAN - Nummern abspeichern und einlesen.
-
-                // using Mysl Datenbank -> anmelde daten wie bei php -> Iban Nummern abspeichern und einlesen
-
-
-
-                //DEUTSCHLAND IBAN AUFBAU:
-                //Längercode(LL): Konstant "DE"
-                //Prüfziffer(PZ): 2-stellig, Modulus 97-10 (ISO 7064) BSP:21
-                //Bankleitzahl(BLZ): Konstant 8-stellig, Bankidentifikation entsprechend deutschem Bankleitzahlenverzeichnis BSP: 30120400
-                //Kontonummer(KTO): Konstant 10-stellig (ggf. mit vorangestellten Nullen) Kunden-Kontonummer BSP: 15228
-
-                /*Die IBAN für unser Beispiel würde also lauten:
-
-                DE21 3012 0400 0000 0152 28 (Papierformat)*/
-
+                //Globale Variablen
                 const string LL = "DE";
+                var leere = 1; // 
+                var BLZ = 0; //var ist bevorzugt für unsere MYSQL TRY CATCH //BLZ = Bankleitzahl
+                var PZ = 0; //PZ = Prüfziffer
+                long Kontonummer; //long vs int -> Long hat ein größeren Bereich. 
+               
 
+        
+                //Eingabe:Kundenname:
+                Console.WriteLine("\n" + "\t" + "Bitte Name der Kunde eingeben!" + "\n");
+                string kundename = Console.ReadLine();
+          
+              do { //diese do-while Schleife hilft uns bei falschen BLZ Eingabe wieder die Möglichkeit es zu korrigieren.   
+                
+                //Eingabe Bankleitzahl + Kontonummer:
 
-                //DATENBANK für die AKTUELLE BLZ Nummer angelegt: von der 'www.bundesbank.de' die blz-aktuell-xlsx datei runtergeladen und in SQL Format konvertiert. 
+                //Bankleitzahl: (Hier wird erstmal nur die Stellenlänge geprüft nicht den Wert)
 
-
-
-
-
-
-                ////////////////Eingabe Bankleitzahl + Kontonummer//////////////////
-
-                //Bankleitzahl:
-
-                var Bankleitzahl_Global = 0; //Für Mysql muss var sein
+                var Bankleitzahl_Global = 0; //Für MYSQL sollte man 'var' benutzen sonst können Probleme auftreten innerhalb unser Try Catch von MYSQL.
                 int Bankleitzahl_check_erg;
-
-
-
+                
+                //do-while Schleife: Wird solange ablaufen bis der User als Bankleitzahl kleiner oder größer als 8 stellige Ziffern eingibt. Muss exakt 8 stellig sein! Dann wird unser Wert gespeichert. 
                 do
                 {
-                    Console.WriteLine("\t" + "Bankleitzahl Eingeben: Bitte exakt 8 Ziffern eingeben!" + "\n"); // Darf max 8 Stellig sein und nur Ziffern!
+                    Console.WriteLine("\n" + "\t" + "Bankleitzahl Eingeben: Bitte exakt 8 Ziffern eingeben!" + "\n"); // Darf max 8 Stellig sein und nur Ziffern!
                     Console.WriteLine();
-
+                    //Hilfe bei der Eingabe für die Orientation. 
                     Console.Write("{0,1}", ".");
                     Console.Write("{0,1}", ".");
                     Console.Write("{0,1}", ".");
@@ -70,41 +51,35 @@ namespace IBAN
                     Console.Write("{0,1}", ".");
                     Console.Write("{0,1}", ".");
                     Console.WriteLine("{0,1}", ".");
+                    //
+                    int Bankleitzahl = int.Parse(Console.ReadLine()); //Die Eingabe wird als Integer gespeichert (da wir in unsere if else als Integer für Bankleitzahl_Global weitergeben wollen)
+                    string Bankleitzahl_umwandeln = Bankleitzahl.ToString(); //Umwandeln in eine String
+                    string Bankleitzahl_check = Bankleitzahl_umwandeln.Length.ToString(); //Für die Überprüfüng von der Länge der Eingabe-> brauche ich die Length von der String 
+                    Bankleitzahl_check_erg = int.Parse(Bankleitzahl_check); //Das Ergebnis von der Länge der String speichere ich als int in 'Bankleitzahl_check_erg'
 
-                    int Bankleitzahl = int.Parse(Console.ReadLine());
-                    string Bankleitzahl_umwandeln = Bankleitzahl.ToString();
-                    string Bankleitzahl_check = Bankleitzahl_umwandeln.Length.ToString();
-                    Bankleitzahl_check_erg = int.Parse(Bankleitzahl_check);
-
-
+                    //Hier in if lasse ich 'Bankleitzahl_check_erg' abchecken: wenn es größer oder kleiner als 8 ist dann ist es ungültig. 
                     if (Bankleitzahl_check_erg > 8 || Bankleitzahl_check_erg < 8)
                     {
                         Console.WriteLine("\t" + "\t" + "Ungültiges Bankleitzahl!" + "\n");
                     }
-                    else {
+                    else {// Ansonsten wird unsere int Bankleitzahl in Bankleitzahl_Global gespeichert.
                         Bankleitzahl_Global = Bankleitzahl;
                         Console.WriteLine("\t" + "\t" + "Die Bankleitzahl: " + Bankleitzahl_Global + "\n");
-
                     }
-
 
                 } while (Bankleitzahl_check_erg > 8 || Bankleitzahl_check_erg < 8);
 
-
-
                 //Kontonummer:
 
-                long Kontonummer;
-                int Kontonummer_check_erg;
-                //string Kontonummer_Global_string;
-
-               
-
+                
+                int Kontonummer_check_erg; 
+             
+                //do-while Schleife: Wird solange ablaufen bis der User kleiner als 1 stellige Ziffern oder größer als 10 stellige Ziffern eingibt. 
                 do
                 {
                     Console.WriteLine("\t" + "Kontonummer Eingeben: Bitte maximum 10 Stellig! \n'*' Weniger als 10 Stellig wird automatisch mit Nullen aufgefüllt" + "\n"); // Darf max 10 Stellig sein und nur Ziffern!
                     Console.WriteLine();
-
+                    //Hilfe bei der Eingabe für die Orientation. 
                     Console.Write("{0,1}", ".");
                     Console.Write("{0,1}", ".");
                     Console.Write("{0,1}", ".");
@@ -115,34 +90,27 @@ namespace IBAN
                     Console.Write("{0,1}", ".");
                     Console.Write("{0,1}", ".");
                     Console.WriteLine("{0,1}", ".");
+                    //
 
 
+                    Kontonummer = long.Parse(Console.ReadLine());//Die Eingabe wird als long gespeichert 
+                    string Kontonummer_umwandeln = Kontonummer.ToString();//Umwandeln in eine String
+                    string Kontonummer_check = Kontonummer_umwandeln.Length.ToString();//Für die Überprüfüng von der Länge der Eingabe-> brauche ich die Length von der String 
+                    Kontonummer_check_erg = int.Parse(Kontonummer_check);//Das Ergebnis von der Länge der String speichere ich als int in 'Kontonummer_check_erg'
 
-                    Kontonummer = long.Parse(Console.ReadLine());
-                    string Kontonummer_umwandeln = Kontonummer.ToString();
-                    string Kontonummer_check = Kontonummer_umwandeln.Length.ToString();
-                    Kontonummer_check_erg = int.Parse(Kontonummer_check);
-                    
-                    Console.WriteLine(Kontonummer_check_erg);
-
-                    //int test = Kontonummer * 1000;
-                   // Console.WriteLine(test);
-
-                    if (Kontonummer_check_erg > 10 || Kontonummer_check_erg < 1)
+                    //Hier in if lasse ich 'Kontonummer_check_erg' abchecken: wenn es größer als 10 stellig ist dann ist es ungültig.   
+                    if (Kontonummer_check_erg > 10)
                     {
                         Console.WriteLine("\t" + "\t" + "Ungültiges Kontonummer!" + "\n");
                     }
                     else
                     {
-                       
-                        if (Kontonummer_check_erg < 10) {
-
-                            //int kontonummer2 = Kontonummer;
-
-                            //Hier soll er die Kontonummer mit Nullen ergänzen 
+                        
+                            //Wenn es kleiner als 10 stellig ist dann soll in Switch-case mit Nullen aufgefüllt werden   
+                   
                             switch (Kontonummer_check_erg) {
 
-                                case 1: Kontonummer = (long)(Kontonummer * 10000000000);
+                                case 1: Kontonummer = (long)(Kontonummer * 1000000000); //Deswegen ist wichtig long und nicht int als Datentyp eingeben sonst würden wir falsches Ergebnis bekommen.
                                     Console.WriteLine("\t" + "\t" + "Die Kontonummer: " + Kontonummer + "\n");
                                     break;
                                 case 2:
@@ -181,50 +149,60 @@ namespace IBAN
                                     Kontonummer = Kontonummer * 1;
                                     Console.WriteLine("\t" + "\t" + "Die Kontonummer: " + Kontonummer + "\n");
                                     break;
-                            } 
-                     
-
-                        }
-                       
+                            }   
                     }
-
 
                 } while (Kontonummer_check_erg > 10 || Kontonummer_check_erg < 1);
 
-                //MYSQL CONNECTION
-
-                //This is my connection string i have assigned the database file address path  
+                
+            
+                //MYSQL Verbindung
+          
+                //connStr ist mein String für die Verbindung: Zugewiesen wurde die Verbindungsdaten von meiner Datenbank.  
                 string connStr = "server=localhost;user=root;database=blz_bundesbank;port=3306;password=";
-
-                var BLZ = 0;
-                var PZ = 0;
-                MySqlConnection conn = new MySqlConnection(connStr);
+                
+               
+              
+                MySqlConnection conn = new MySqlConnection(connStr); 
                 try
                 {
 
-
-                    Console.WriteLine("Connecting to MySQL...");
-                    conn.Open();
-
+                    //Verbindung wird aufgebaut
+                    conn.Open(); 
+                    //
+                    //SQL Abfrage 
                     string sql = "select * from blz_bundesbank.table_name where Bankleitzahl;";
-
+                    //MySqlCommand Methode (Wir übergeben 2 Parameter) (sql=die Abfrage, conn=unsere Verbindung)
                     MySqlCommand cmd = new MySqlCommand(sql, conn);
+                    //Der MySqlDataReader rdr bekommt die in cmd gespeicherte Abfrage und Verbindung und ist bereit unsere Daten auszugeben. 
                     MySqlDataReader rdr = cmd.ExecuteReader();
 
-                    //read the data
-                    while (rdr.Read())
+                    //Lese die Daten:
+                    
+                    while (rdr.Read()) //Die While schleife läuft von oben bis unten in unsere Spalte ab bis er zutreffende Ziffer oder Ergebnis findet.
                     {
-                        //BLZ = rdr.GetInt32(0);
-                        BLZ = rdr.GetInt32(0);
-                        PZ = rdr.GetInt32(8); //Prüfziffer
+                        //table_name(die name unsere tabelle):und die Spalten:--+--Bankleitzhal--+--Merkmal--+--Prfzifferberechnungsmethode--+--
+                        //Die Spalten sind in ein Array von 0-12 Werte von links nach rechts.   
+                        BLZ = rdr.GetInt32(0); //Bankleitzahl (ist unsere erste Spalte deswegen ist es (0))
+                        PZ = rdr.GetInt32(8); //Prüfziffer (ist unsere erste Spalte deswegen ist es (8))
+                        //Und die Werte werden in BLZ und PZ gespeichert. 
+                        
+                        //Jetzt wird überprüft ob unsere Bankleitzahl in unsere Spalte Bankleitzahl (0) gefunden wird. Hier wird der Wert geprüft!
                         if (BLZ == Bankleitzahl_Global) {
-                            Console.WriteLine(rdr[2] + " -- " + BLZ + " gefunden");
-                            //Bankleitzahl_Global_string = BLZ.ToString();
+                            Console.WriteLine(rdr[2] + " -- " + BLZ + " Bankleitzahl ist eine gültige BLZ");
+                            //Wenn ja wird uns die Bezeichnung das wäre die '2' Spalte (0-1-2) und BLZ Nummer ausgegeben.
+                            leere = 1;                            
                             break;
+                            
+                        }else if(BLZ !=Bankleitzahl_Global){
+                            leere = 0; //Wenn er nichts findet dann soll er 0 als Wert speichern
+                            break; 
                         }
-                    }
-                    rdr.Close();
 
+                    }
+                    if(leere==0){Console.WriteLine("Keine gültige Bankleitzahl gefunden bitte erneut eingeben");}; //Falls er keine gültige BLZ findet.
+                    rdr.Close();
+                   
 
                 }
                 catch (Exception err)
@@ -232,62 +210,93 @@ namespace IBAN
                     Console.WriteLine(err.ToString());
                 }
 
-                conn.Close();
-                Console.WriteLine("Connection Closed. Press any key to exit...");
+                conn.Close(); //MYSQL Verbindung Geschlossen
+              }while(leere != 1);
+                
+                Console.WriteLine("Bitte Enter drücken um die neue IBAN für ihre Kunde zu erfahren...");
                 Console.Read();
-
-
-                //Console.WriteLine(BLZ);
-                //Console.WriteLine(PZ);
-                //Jetzt müssen wir den Konstant 'DE' + Bankleitzahl_Global_string -> in ein Array packen!
-
-                string BLZ2 = BLZ.ToString();
-               // string Kontonummer_String = Kontonummer_Global.ToString();
+               
+                //Wir möchten die eingegebene Daten in eine string Array speichern!
+                //Dafür wandeln wir die Datentypen in String um:
+                string BLZ2 = BLZ.ToString(); 
                 string PZ2 = PZ.ToString();
                 string Kontonummer_String2 = Kontonummer.ToString();
-
+                //
+                string[] Iban_Array = new string[] { LL, PZ2, BLZ2, Kontonummer_String2}; //neue string Array     
+                string Iban_Array_ergebnis = Iban_Array[0] + Iban_Array[1] + Iban_Array[2] + Iban_Array[3]; //Die values von meinem Array speichern wir in eine String!
                 
                 
+                //Wir möchten gerne das Ergebnis von Iban_Array_ergebnis in unsere Tabelle(kunden_daten) speichern   
+                
+                //MYSQL Verbindung
 
-                string[] Iban_Array = new string[] { LL, PZ2, BLZ2, Kontonummer_String2};
-                //string[,] Iban_Array = new string[4, 1] {{LL}, {PZ2}, {BLZ2}, {Kontonummer_String}};
-                string Iban_Array_ergebnis = Iban_Array[0] + Iban_Array[1] + Iban_Array[2] + Iban_Array[3];
-                Console.WriteLine("Ihre Iban Nummer lautet " + Iban_Array_ergebnis);
-
-         
-
-
-                beenden = true;
-                string inneren_beenden = "";
-             //   do {
-                    Console.WriteLine("Möchten Sie das Program beenden ja oder nein?");
-                    string inneren_beenden2 = Console.ReadLine();
-
-                    inneren_beenden2 = inneren_beenden;
-
-             //     } while (inneren_beenden != "ja" || inneren_beenden != "nein");
-
-             
-
-                if (inneren_beenden == "ja")
+                //conn2Str ist mein String für die Verbindung: Zugewiesen wurde die Verbindungsdaten meiner Datenbank .    
+                string conn2Str = "server=localhost;user=root;database=blz_bundesbank;port=3306;password=";
+               
+               //Die Value von kundenname speichern wir in variable Name
+               var Name = kundename;
+              MySqlConnection connection = null;
+                try
                 {
-                    beenden = false;
-                }
-                else if (inneren_beenden == "nein")
+                    connection = new MySqlConnection(conn2Str);
+                    connection.Open();
+                    MySqlCommand cmd = new MySqlCommand();
+                    cmd.Connection = connection;
+                    //Kleiner Unterschied im Vergleich mit Oben: Jetzt möchten wir gerne Daten einfügen und nicht nur auslesen! 
+                    cmd.CommandText = "INSERT INTO kunden_daten(Kunden_Name, Iban_nummer) VALUES(@Kunden_name, @Iban_nummer)"; 
+ 
+                    cmd.Parameters.AddWithValue("@Kunden_name", Name); //Die Value von Name wird zur Spalte Kunden_name gegeben.
+                    cmd.Parameters.AddWithValue("@Iban_nummer", Iban_Array_ergebnis); //Die Value von Iban_Array_ergebnis wird zur Spalte Iban_nummer gegeben.
 
+                    cmd.ExecuteNonQuery();    
+                }
+                finally
                 {
-                    beenden = true;
+                    if (connection != null)
+                        connection.Close(); //MYSQL Verbindung Geschlossen
+                }
+                
+                //Das Ergebnis wird ausgegeben und in unsere Datenbank Tabelle der Kunde + IBAN angelegt. 
+                Console.WriteLine("Für den Kunde: " + Name + ": lautet die IBAN Nummer: " + Iban_Array_ergebnis + "\n");
+                
+                
+                
+                
+              //Möchte die vorhandendenen Kunden ausgeben  
+
+              string conn3Str = "server=localhost;user=root;database=blz_bundesbank;port=3306;password=";
+
+              MySqlConnection conn3 = new MySqlConnection(conn3Str); 
+                try
+                {
+
+                    //Verbindung wird aufgebaut
+                    conn3.Open(); 
+                    //
+                    //SQL Abfrage 
+                    string sql3 = "select * from blz_bundesbank.kunden_daten;";
+                    //MySqlCommand Methode (Wir übergeben 2 Parameter) (sql=die Abfrage, conn=unsere Verbindung)
+                    MySqlCommand cmd3 = new MySqlCommand(sql3, conn3);
+                    //Der MySqlDataReader rdr bekommt die in cmd gespeicherte Abfrage und Verbindung und ist bereit unsere Daten auszugeben. 
+                    MySqlDataReader rdr3 = cmd3.ExecuteReader();
+
+                    //Lese die Daten:
+                   Console.WriteLine("\n" + "Bisher angelegte Kunden:");
+                    while (rdr3.Read()) //Die While schleife läuft von oben bis unten in unsere Spalte ab bis er zutreffende Ziffer oder Ergebnis findet.
+                    {
+                        Console.WriteLine("\n" + rdr3[0] + " -- " + rdr3[1]);
+                    }
+                   
+                    rdr3.Close();
+                   
+
+                }
+                catch (Exception err)
+                {
+                    Console.WriteLine(err.ToString());
                 }
 
-            } while (beenden != false);
-
-           Console.ReadKey();
-
-
-
-
-
-
+            Console.ReadKey();
         }
     }
 }
