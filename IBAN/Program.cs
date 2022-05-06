@@ -21,12 +21,14 @@ namespace IBAN
                 var BLZ = 0; //var ist bevorzugt für unsere MYSQL TRY CATCH //BLZ = Bankleitzahl
                 var PZ = 0; //PZ = Prüfziffer
                 long Kontonummer; //long vs int -> Long hat ein größeren Bereich. 
+               
 
+        
                 //Eingabe:Kundenname:
-                Console.WriteLine("\t" + "Bitte Name der Kunde eingeben!" + "\n");
+                Console.WriteLine("\n" + "\t" + "Bitte Name der Kunde eingeben!" + "\n");
                 string kundename = Console.ReadLine();
-            
-              do { //die äußere do-while Schleife hilft uns bei falschen BLZ Eingabe wieder die Möglichkeit es zu korrigieren.   
+          
+              do { //diese do-while Schleife hilft uns bei falschen BLZ Eingabe wieder die Möglichkeit es zu korrigieren.   
                 
                 //Eingabe Bankleitzahl + Kontonummer:
 
@@ -38,7 +40,7 @@ namespace IBAN
                 //do-while Schleife: Wird solange ablaufen bis der User als Bankleitzahl kleiner oder größer als 8 stellige Ziffern eingibt. Muss exakt 8 stellig sein! Dann wird unser Wert gespeichert. 
                 do
                 {
-                    Console.WriteLine("\t" + "Bankleitzahl Eingeben: Bitte exakt 8 Ziffern eingeben!" + "\n"); // Darf max 8 Stellig sein und nur Ziffern!
+                    Console.WriteLine("\n" + "\t" + "Bankleitzahl Eingeben: Bitte exakt 8 Ziffern eingeben!" + "\n"); // Darf max 8 Stellig sein und nur Ziffern!
                     Console.WriteLine();
                     //Hilfe bei der Eingabe für die Orientation. 
                     Console.Write("{0,1}", ".");
@@ -166,7 +168,6 @@ namespace IBAN
                 {
 
                     //Verbindung wird aufgebaut
-                    Console.WriteLine("Connecting to MySQL...");
                     conn.Open(); 
                     //
                     //SQL Abfrage 
@@ -188,7 +189,7 @@ namespace IBAN
                         
                         //Jetzt wird überprüft ob unsere Bankleitzahl in unsere Spalte Bankleitzahl (0) gefunden wird. Hier wird der Wert geprüft!
                         if (BLZ == Bankleitzahl_Global) {
-                            Console.WriteLine(rdr[2] + " -- " + BLZ + " gefunden");
+                            Console.WriteLine(rdr[2] + " -- " + BLZ + " Bankleitzahl ist eine gültige BLZ");
                             //Wenn ja wird uns die Bezeichnung das wäre die '2' Spalte (0-1-2) und BLZ Nummer ausgegeben.
                             leere = 1;                            
                             break;
@@ -212,7 +213,7 @@ namespace IBAN
                 conn.Close(); //MYSQL Verbindung Geschlossen
               }while(leere != 1);
                 
-                Console.WriteLine("Bitte Enter drücken um ihre neue IBAN zu erfahren...");
+                Console.WriteLine("Bitte Enter drücken um die neue IBAN für ihre Kunde zu erfahren...");
                 Console.Read();
                
                 //Wir möchten die eingegebene Daten in eine string Array speichern!
@@ -256,9 +257,46 @@ namespace IBAN
                 }
                 
                 //Das Ergebnis wird ausgegeben und in unsere Datenbank Tabelle der Kunde + IBAN angelegt. 
-                Console.WriteLine("Sehr geehrte/r " + Name + " ihre Iban Nummer lautet " + Iban_Array_ergebnis);
-                Console.ReadKey();
+                Console.WriteLine("Für den Kunde: " + Name + ": lautet die IBAN Nummer: " + Iban_Array_ergebnis + "\n");
+                
+                
+                
+                
+              //Möchte die vorhandendenen Kunden ausgeben  
 
+              string conn3Str = "server=localhost;user=root;database=blz_bundesbank;port=3306;password=";
+
+              MySqlConnection conn3 = new MySqlConnection(conn3Str); 
+                try
+                {
+
+                    //Verbindung wird aufgebaut
+                    conn3.Open(); 
+                    //
+                    //SQL Abfrage 
+                    string sql3 = "select * from blz_bundesbank.kunden_daten;";
+                    //MySqlCommand Methode (Wir übergeben 2 Parameter) (sql=die Abfrage, conn=unsere Verbindung)
+                    MySqlCommand cmd3 = new MySqlCommand(sql3, conn3);
+                    //Der MySqlDataReader rdr bekommt die in cmd gespeicherte Abfrage und Verbindung und ist bereit unsere Daten auszugeben. 
+                    MySqlDataReader rdr3 = cmd3.ExecuteReader();
+
+                    //Lese die Daten:
+                   Console.WriteLine("\n" + "Bisher angelegte Kunden:");
+                    while (rdr3.Read()) //Die While schleife läuft von oben bis unten in unsere Spalte ab bis er zutreffende Ziffer oder Ergebnis findet.
+                    {
+                        Console.WriteLine("\n" + rdr3[0] + " -- " + rdr3[1]);
+                    }
+                   
+                    rdr3.Close();
+                   
+
+                }
+                catch (Exception err)
+                {
+                    Console.WriteLine(err.ToString());
+                }
+
+            Console.ReadKey();
         }
     }
 }
