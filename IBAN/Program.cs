@@ -168,17 +168,18 @@ namespace IBAN
                 {
 
                     //Verbindung wird aufgebaut
-                    conn.Open(); 
+                    conn.Open();
                     //
                     //SQL Abfrage 
-                    string sql = "select * from blz_bundesbank.table_name where Bankleitzahl;";
+                    string sql = "select * from blz_bundesbank.table_name where Bankleitzahl = @Bankleitzahl;";
                     //MySqlCommand Methode (Wir übergeben 2 Parameter) (sql=die Abfrage, conn=unsere Verbindung)
                     MySqlCommand cmd = new MySqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@Bankleitzahl", Bankleitzahl_Global);
                     //Der MySqlDataReader rdr bekommt die in cmd gespeicherte Abfrage und Verbindung und ist bereit unsere Daten auszugeben. 
                     MySqlDataReader rdr = cmd.ExecuteReader();
 
                     //Lese die Daten:
-                    
+
                     while (rdr.Read()) //Die While schleife läuft von oben bis unten in unsere Spalte ab bis er zutreffende Ziffer oder Ergebnis findet.
                     {
                         //table_name(die name unsere tabelle):und die Spalten:--+--Bankleitzhal--+--Merkmal--+--Prfzifferberechnungsmethode--+--
