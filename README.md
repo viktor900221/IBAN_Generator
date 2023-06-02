@@ -29,5 +29,16 @@ Dieses Programm ermöglicht es, eine IBAN (International Bank Account Number) f�
 # Autoren
 Viktor Legradi-Göhring
 
-
-![MySql_DB_blz-bundesbank](https://github.com/viktor900221/IBAN_Generator/assets/79362660/5246e4cb-d424-4da1-81a0-5a7cb1f43052)
+# Screenshots
+## Datenbank
+![MySql_DB_blz-bundesbank](https://github.com/viktor900221/IBAN_Generator/assets/79362660/90da0dc5-6c66-4b13-9d3f-8abdcdce5799)
+## Kunden
+![Kunden](https://github.com/viktor900221/IBAN_Generator/assets/79362660/9536e266-f352-4ef6-984f-3f5702420dd3)
+## Bundesbank
+![Bundesbank_DB](https://github.com/viktor900221/IBAN_Generator/assets/79362660/1be82120-bceb-4d68-a8c3-cd92d4271091)
+## Anwendung 
+### TestUser2 anlegen und IBAN geben
+![Anwendung](https://github.com/viktor900221/IBAN_Generator/assets/79362660/7d8ab9ff-894d-4612-887a-b20098fdee10)
+### TestUser 2 angelegt und IBAN für den User generiert aus PAN, BLZ, Prüfziffer und aus dem gewählten Kontonummer
+![Anwendung2](https://github.com/viktor900221/IBAN_Generator/assets/79362660/c30f6627-d8b7-4ec7-9904-c08a1adfeb85)
+![Datenbank2](https://github.com/viktor900221/IBAN_Generator/assets/79362660/0b0bd529-3474-492d-8ee8-0265194c9e9c)
