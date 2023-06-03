@@ -1,4 +1,4 @@
-# IBAN_Generator
+# IBAN_Generator (C# + MySQL)
 
 Wilkommen beim IBAN-Generator, entwickelt von Viktor Legradi-Göhring.
 
